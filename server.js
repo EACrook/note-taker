@@ -5,7 +5,7 @@ const app = express();
 
 const PORT = process.env.PORT || 3001;
 
-const { notes } = require('./db/db.json');
+//let notes  = require('./db/db.json');
 
 app.use(express.urlencoded({
     extended: true
@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.static('public'))
 
 function findById(id, notesArray) {
-    const result = notesArray.filter(note => note.id === id)[0];
+    const result = notesArray.filter(note => note.id != id);
     return result;
 }
 
@@ -28,21 +28,51 @@ app.get('/notes', (req, res) => {
 })
 
 app.get('/api/notes', (req, res) => {
-    let results = notes;
-    if(req.query) {
-        results = filterByQuery(req.query, results);
-    }
-    res.json(results);
+
+    fs.readFile('./db/db.json', 'utf8', function (err, result) {
+        console.log('RESULT!!! from read file!!', result)
+
+        res.json(JSON.parse(result))
+    });
 });
 
-// app.get('/api/notes/:id', (req, res) => {
-//     const result = findById(req.params.id, notes);
-//         if (result) {
-//             res.json(result);
-//         }else {
-//             res.send(404);
-//         }
-// });
+app.post('/api/notes', (req, res) => {
+
+
+    fs.readFile('./db/db.json', 'utf8', function (err, result) {
+        console.log('RESULT!!! from read file!!', result)
+        var notes = JSON.parse(result)
+        req.body.id = notes.length + 1
+        notes.push(req.body)
+
+        var strNotes = JSON.stringify(notes)
+        fs.writeFile('./db/db.json', strNotes, function (err, result) {
+            res.json(notes)
+        })
+    })
+
+
+});
+
+// app.delete('/api/notes/:id', (req, res) => {
+//     // var newNotes = findById(parseInt(req.params.id), notes)
+//     // console.log('new notes!!', newNotes)
+//     notes = newNotes
+//     // res.json(newNotes)
+
+//     fs.readFile('./db/db.json', 'utf8', function (err, result) {
+//         console.log('RESULT!!! from delete file!!', result)
+//         var newNotes = findById(parseInt(req.params.id), notes)
+//         console.log('new notes!!', newNotes)
+//         notes = newNotes
+//         res.json(newNotes)
+
+//         var strNotes = JSON.stringify(notes)
+//         fs.writeFile('./db/db.json', strNotes, function (err, result) {
+//             res.json(newNotes)
+//         })
+//     })
+//})
 
 app.listen(3001, () => {
     console.log(`API server now on port ${PORT}!`)

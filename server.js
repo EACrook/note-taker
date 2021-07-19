@@ -54,26 +54,6 @@ app.post('/api/notes', (req, res) => {
 
 });
 
-// app.delete('/api/notes/:id', (req, res) => {
-//     // var newNotes = findById(parseInt(req.params.id), notes)
-//     // console.log('new notes!!', newNotes)
-//     notes = newNotes
-//     // res.json(newNotes)
-
-//     fs.readFile('./db/db.json', 'utf8', function (err, result) {
-//         console.log('RESULT!!! from delete file!!', result)
-//         var newNotes = findById(parseInt(req.params.id), notes)
-//         console.log('new notes!!', newNotes)
-//         notes = newNotes
-//         res.json(newNotes)
-
-//         var strNotes = JSON.stringify(notes)
-//         fs.writeFile('./db/db.json', strNotes, function (err, result) {
-//             res.json(newNotes)
-//         })
-//     })
-//})
-
-app.listen(3001, () => {
+app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`)
 })
